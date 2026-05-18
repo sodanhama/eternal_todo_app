@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "30179032828",
+    "project_id": "eternal-app-9332a",
+    "storage_bucket": "eternal-app-9332a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30179032828:android:aea7d21180989cb66c2179",
+        "android_client_info": {
+          "package_name": "app.sodanhama.eternal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkywUDw1O8o4oTg6mBV-3SCrM_EJkDU4k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

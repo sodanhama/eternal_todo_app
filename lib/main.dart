@@ -1,3 +1,5 @@
+import 'package:eternal_app/themes/dark_mode.dart';
+import 'package:eternal_app/themes/light_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:eternal_app/firebase_options.dart';
@@ -18,6 +20,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, 
       home: LoginPage(),
+      theme: lightMode,
+      darkTheme: darkMode,
     );
   }
 }

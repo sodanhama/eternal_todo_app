@@ -1,5 +1,5 @@
-import 'package:eternal_app/features/auth/domain/entities/app_user.dart';
-import 'package:eternal_app/features/auth/domain/repos/auth_repo.dart';
+import 'package:eternal_app/features/auth/presentation/domain/entities/app_user.dart';
+import 'package:eternal_app/features/auth/presentation/domain/repos/auth_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthRepo implements AuthRepo {

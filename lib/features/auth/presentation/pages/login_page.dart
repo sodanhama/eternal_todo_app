@@ -1,6 +1,8 @@
 import 'package:eternal_app/features/auth/presentation/components/my_button.dart';
 import 'package:eternal_app/features/auth/presentation/components/my_textfield.dart';
+import 'package:eternal_app/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   final void Function()? togglePages;
@@ -16,6 +18,55 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  late final authCubit = context.read<AuthCubit>();
+
+
+  void login() {
+    final String email = emailController.text;
+    final String password = passwordController.text;
+
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      authCubit.login(email, password);
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter both email and password"))
+      );
+    }
+  }
+
+  void openForgotPassword() {
+    showDialog(
+      context:context,
+      builder: (context) => AlertDialog(
+      title: const Text("Forgot Password?"),
+      content: MyTextField(
+        controller: emailController, 
+        hintText: "Email", 
+        obscureText: false,),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context), 
+          child: const Text("Cancel"),),
+        TextButton(
+          onPressed: () async {
+            String message=await authCubit.forgotPassword(emailController.text);
+            if (message == "Password reset email sent.") {
+              Navigator.pop(context);
+              emailController.clear();
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(message)));
+            
+            }, child: const Text("Reset"),),
+
+
+      ]
+
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,18 +96,19 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Forgot Password?",
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold,),
-                    
+                  GestureDetector(
+                    onTap: openForgotPassword,
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold,),
+                      
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 25),
               MyButton(
-                onTap: (){
-                  
-                },
+                onTap: login,
                 text:"LOGIN",
               ),
               

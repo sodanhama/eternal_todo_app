@@ -1,4 +1,4 @@
-import 'package:eternal_app/features/auth/domain/entities/app_user.dart';
+import 'package:eternal_app/features/auth/presentation/domain/entities/app_user.dart';
 
 
 abstract class AuthState {}

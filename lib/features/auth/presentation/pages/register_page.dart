@@ -1,6 +1,8 @@
 import 'package:eternal_app/features/auth/presentation/components/my_button.dart';
 import 'package:eternal_app/features/auth/presentation/components/my_textfield.dart';
+import 'package:eternal_app/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterPage extends StatefulWidget {
   final void Function()? togglePages;
@@ -18,6 +20,37 @@ class _RegisterPageState extends State<RegisterPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+
+  void register() {
+    final String username = usernameController.text;
+    final String email = emailController.text;
+    final String password = passwordController.text;
+    final String confirmPassword = confirmPasswordController.text;
+
+    final authCubit = context.read<AuthCubit>();
+
+    if (email.isNotEmpty && username.isNotEmpty && password.isNotEmpty && confirmPassword.isNotEmpty) {
+      if (password == confirmPassword) {
+        authCubit.register(username, email, password);
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Passwords do not match")));
+      }
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please fill in all fields")));
+    }
+
+  }
+  @override
+  void dispose() {
+    emailController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 25),
               MyButton(
-                onTap: (){
-                  
-                },
+                onTap: register,
                 text:"SIGN UP",
               ),
               

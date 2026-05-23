@@ -1,7 +1,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eternal_app/features/auth/domain/entities/app_user.dart';
-import 'package:eternal_app/features/auth/domain/repos/auth_repo.dart';
+import 'package:eternal_app/features/auth/presentation/domain/entities/app_user.dart';
+import 'package:eternal_app/features/auth/presentation/domain/repos/auth_repo.dart';
 import 'package:eternal_app/features/auth/presentation/cubits/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -48,10 +48,10 @@ class AuthCubit extends Cubit<AuthState> {
         }
     }
 
-    Future<void> register(String name, String email, String password) async {
+    Future<void> register(String username, String email, String password) async {
         try {
             emit(AuthLoading());
-            final user = await authRepo.registerWithEmailPassword(name, email, password);
+            final user = await authRepo.registerWithEmailPassword(username, email, password);
 
             if (user != null) {
                 _currentUser = user;

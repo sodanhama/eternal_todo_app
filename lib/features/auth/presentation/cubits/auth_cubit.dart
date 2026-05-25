@@ -8,9 +8,7 @@ class AuthCubit extends Cubit<AuthState> {
     final AuthRepo authRepo;
     AppUser? _currentUser;
 
-    AuthCubit({required this.authRepo}): super(AuthInitial()) {
-
-    }
+    AuthCubit({required this.authRepo}): super(AuthInitial());
 
     AppUser? get currentUser => _currentUser;
 

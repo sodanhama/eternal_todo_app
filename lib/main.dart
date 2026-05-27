@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/auth/presentation/pages/auth_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
 
-
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options:DefaultFirebaseOptions.currentPlatform);

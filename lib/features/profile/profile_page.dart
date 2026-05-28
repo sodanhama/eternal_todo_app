@@ -17,8 +17,12 @@ class ProfilePage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Icon(Icons.person,
-            size: 80),
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Icon(Icons.person,
+              size: 80),
+            ),
+            Text(currentUser!.email),
           ]
         )
       ),

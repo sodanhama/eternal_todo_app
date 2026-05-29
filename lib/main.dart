@@ -2,6 +2,8 @@ import 'package:eternal_app/features/auth/data/firebase_auth_repo.dart';
 import 'package:eternal_app/features/auth/presentation/components/loading.dart';
 import 'package:eternal_app/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:eternal_app/features/auth/presentation/cubits/auth_state.dart';
+import 'package:eternal_app/features/home/data/firebase_post_repo.dart';
+import 'package:eternal_app/features/home/presentation/cubits/post_cubit.dart';
 import 'package:eternal_app/themes/dark_mode.dart';
 import 'package:eternal_app/themes/light_mode.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class MainApp extends StatelessWidget {
 
   final firebaseAuthRepo = FirebaseAuthRepo();
   
+  final firebasePostRepo = FirebasePostRepo();
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,10 @@ class MainApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
+
+        BlocProvider<PostCubit>(
+          create: (context) => PostCubit(postRepo: firebasePostRepo),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

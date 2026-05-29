@@ -1,5 +1,11 @@
 import 'package:eternal_app/components/drawer.dart';
+import 'package:eternal_app/features/auth/presentation/components/my_textfield.dart';
+import 'package:eternal_app/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:eternal_app/features/home/domain/entities/post.dart';
+import 'package:eternal_app/features/home/presentation/cubits/post_cubit.dart';
+import 'package:eternal_app/features/home/presentation/cubits/post_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +17,82 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length:3, vsync: this);
+
+  void addPost() {
+    String currentCategory;
+    switch (_tabController.index) {
+      case 0:
+        currentCategory = "Create";
+        break;
+      case 1:
+        currentCategory = "Publish";
+        break;
+      case 2:
+        currentCategory = "Earn";
+        break;
+      default:
+        currentCategory = "Create";
+    }
+    final titleController = TextEditingController();
+    final contentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("New Post"),
+        content: Column(
+          children: [
+            MyTextField(
+              controller: titleController,
+              hintText: "Title",
+              obscureText: false),
+              const SizedBox(height: 16),
+
+            MyTextField(
+              controller: contentController, 
+              hintText: "Content",
+              obscureText: false, 
+            )
+          ]
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
+          TextButton(onPressed: () {
+            if (titleController.text.isNotEmpty) {
+              final postCubit = context.read<PostCubit>();
+              final authCubit = context.read<AuthCubit>();
+              postCubit.createPost(
+                title: titleController.text,
+                content: contentController.text,
+                category: currentCategory,
+                username: authCubit.currentUser!.email // Replace with actual username
+              );
+
+              Navigator.pop(context); 
+              
+            }
+          }, child: const Text("Post"))
+        ]
+      )
+    );
+  }
+
+  Widget _buildCategoryPosts(String category, List<Post> posts) {
+    final postsInThisCategory = posts.where((post) => post.category == category).toList();
+
+    if (postsInThisCategory.isEmpty) {
+      return const Center(child: Text("No posts here yet!"));
+    }
+
+    return ListView.builder(
+      itemCount: postsInThisCategory.length,
+      itemBuilder: (contex, index) {
+        final post = postsInThisCategory[index];
+
+        return Text(post.title);
+      }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +112,37 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ]
             ),
             actions: [
-              IconButton(onPressed: () {},
+              IconButton(onPressed: addPost ,
               icon: const Icon(Icons.add),
               )
             ]
 
         ),
         drawer: MyDrawer(),
-    );
+
+        body: BlocBuilder<PostCubit, PostState>(builder: (context, state) {
+          if (state is PostsLoaded) {
+            return TabBarView(
+              controller: _tabController,
+              children: [
+                _buildCategoryPosts("Create", state.posts),
+                _buildCategoryPosts("Publish", state.posts),
+                _buildCategoryPosts("Earn", state.posts)
+              ],
+            );
+
+
+          }
+          if (state is PostLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is PostError) {
+            return Center(child: Text(state.message));
+          }
+
+          return const SizedBox();
+
+        },),);
   }
 }

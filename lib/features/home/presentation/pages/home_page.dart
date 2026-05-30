@@ -2,6 +2,7 @@ import 'package:eternal_app/components/drawer.dart';
 import 'package:eternal_app/features/auth/presentation/components/my_textfield.dart';
 import 'package:eternal_app/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:eternal_app/features/home/domain/entities/post.dart';
+import 'package:eternal_app/features/home/presentation/components/post_tile.dart';
 import 'package:eternal_app/features/home/presentation/cubits/post_cubit.dart';
 import 'package:eternal_app/features/home/presentation/cubits/post_states.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length:3, vsync: this);
+  
+  late final postCubit = context.read<PostCubit>();
+  
+  @override
+  void initState() {
+    super.initState();
+
+    postCubit.loadPosts();
+  }
 
   void addPost() {
     String currentCategory;
@@ -77,6 +87,30 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
+  void deletePost(String id) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Post?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel")
+          ),
+          TextButton(
+            onPressed: () {
+              postCubit.deletePost(id);
+              Navigator.pop(context);
+            },
+            child: const Text("Delete"),
+          )
+        ]
+
+      )
+    );
+
+  }
+
   Widget _buildCategoryPosts(String category, List<Post> posts) {
     final postsInThisCategory = posts.where((post) => post.category == category).toList();
 
@@ -89,7 +123,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       itemBuilder: (contex, index) {
         final post = postsInThisCategory[index];
 
-        return Text(post.title);
+        return PostTile(post: post, onDelete: () => deletePost(post.id),);
       }
     );
   }
